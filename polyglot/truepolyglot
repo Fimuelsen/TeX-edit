@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org/>
+"""
+
+import argparse
+import logging
+
+from PdfFileTransformer import Pdf
+from ZipFileTransformer import Zip
+from PolyglotFile import PolyglotZipPdf
+from PolyglotFile import PolyglotPdfZip
+from PolyglotFile import PolyglotSZipPdf
+from PolyglotFile import PolyglotPdfAny
+from PolyglotFile import PolyglotZipAny
+
+
+
+def main():
+    description_str = ('Generate a polyglot file.\n\nFormats availables:\n' +
+                       '* pdfzip: Generate a file valid as PDF and ZIP.' +
+                       ' The format is closest to PDF.\n' +
+                       '* zippdf: Generate a file valid as ZIP and PDF.' +
+                       ' The format is closest to ZIP.\n' +
+                       '* szippdf: Generate a file valid as ZIP and PDF.' +
+                       ' The format is strictly a ZIP.\n' +
+                       '           Archive is modified.\n' +
+                       '* pdfany: Generate a valid PDF file with payload1' +
+                       ' file content as the first object\n' +
+                       '          or/and payload2 file' +
+                       ' content as the last oject.\n' +
+                       '* zipany: Generate a valid ZIP file with payload1' +
+                       ' file content at the start of the file\n' +
+                       '          or/and payload2 file content between' +
+                       ' LFH and CD.\n')
+    usage_str = '%(prog)s format [options] output-file'
+    epilog_str = 'TruePolyglot v1.6.2'
+    frm = argparse.RawTextHelpFormatter
+    parser = argparse.ArgumentParser(description=description_str,
+                                     epilog=epilog_str,
+                                     usage=usage_str,
+                                     formatter_class=frm)
+    parser.add_argument('format', nargs='+', choices=["pdfzip",
+                                                      "zippdf",
+                                                      "szippdf",
+                                                      "pdfany",
+                                                      "zipany"],
+                        help='Output polyglot format')
+    parser.add_argument('--pdffile', dest='pdffile',
+                        help='PDF input file')
+    parser.add_argument('--zipfile', dest='zipfile',
+                        help='ZIP input file')
+    parser.add_argument('--payload1file', dest='payload1file',
+                        help='Payload 1 input file')
+    parser.add_argument('--payload2file', dest='payload2file',
+                        help='Payload 2 input file')
+    parser.add_argument('--acrobat-compatibility',
+                        dest='acrobat_compatibility',
+                        help='Add a byte at the start for Acrobat Reader compatibility with the szippdf format',
+                        action='store_true')
+    parser.add_argument('--verbose', dest='verbose',
+                        help='Verbosity level  (default: info)',
+                        default="info",
+                        choices=["none", "error", "info", "debug"])
+    parser.add_argument('output_file', nargs='+',
+                        help='Output polyglot file path')
+
+    args = parser.parse_args()
+
+    if args.acrobat_compatibility and args.format[0] != "szippdf":
+        parser.error('--acrobat-compatibility is for szippdf only')
+    if "pdf" in args.format[0] and args.pdffile is None:
+        parser.error('pdffile is required')
+    if "zip" in args.format[0] and args.zipfile is None:
+        parser.error('zipfile is required')
+    if ("any" in args.format[0] and args.payload1file is None and
+            args.payload2file is None):
+        parser.error('payload1file or payload2file is required')
+
+    if args.verbose == "none":
+        logging.basicConfig(level=logging.CRITICAL)
+    if args.verbose == "error":
+        logging.basicConfig(level=logging.ERROR)
+    if args.verbose == "info":
+        logging.basicConfig(level=logging.INFO)
+    if args.verbose == "debug":
+        logging.basicConfig(level=logging.DEBUG)
+
+    if args.format[0] == "pdfzip":
+        p = Pdf(args.pdffile)
+        z = Zip(args.zipfile)
+        a = PolyglotPdfZip(p, z)
+    if args.format[0] == "zippdf":
+        p = Pdf(args.pdffile)
+        z = Zip(args.zipfile)
+        a = PolyglotZipPdf(p, z)
+    if args.format[0] == "szippdf":
+        p = Pdf(args.pdffile)
+        z = Zip(args.zipfile)
+        a = PolyglotSZipPdf(p, z, args.acrobat_compatibility)
+    if args.format[0] == "pdfany":
+        p = Pdf(args.pdffile)
+        a = PolyglotPdfAny(p, args.payload1file, args.payload2file)
+    if args.format[0] == "zipany":
+        z = Zip(args.zipfile)
+        a = PolyglotZipAny(z, args.payload1file, args.payload2file)
+
+
+    a.generate()
+    a.write(args.output_file[0])
+
+
+if __name__ == "__main__":
+    main()

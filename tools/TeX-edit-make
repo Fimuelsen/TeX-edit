@@ -1,0 +1,77 @@
+#!/bin/bash
+prompt_confirm() {
+  while true; do
+    read -r -n 1 -p "${1:-Continue?} [y/n]: " REPLY
+    case $REPLY in
+      [yY]) echo ; return 0 ;;
+      [nN]) echo ; return 1 ;;
+      *) printf " \033[31m %s \n\033[0m" "invalid input"
+    esac 
+  done  
+}
+
+while getopts ho:s: flag
+do
+    case "${flag}" in
+        h)
+	echo "Usage: TeX-edit-make [FLAG] filename.pdf"
+	echo "Makes a TeX-edit compatible pdf file out of a 'main.tex' and a 'main.pdf' file in the working directory."
+	echo "The flag -o overwrite files WITHOUT prompting including main.zip."
+	echo "The flag -s overwrite files WITHOUT prompting and supresses all output."
+	exit 
+        ;;
+        o) FILENAME=$OPTARG
+       	if test -a $FILENAME; then 
+		echo $FILENAME "is getting overwritten."
+	fi
+	if test -a main.zip; then 
+		echo "The file main.zip is getting overwritten."
+	fi;;
+        s) FILENAME=$OPTARG
+        zip -j main.zip main.tex main.aux main.log figurenames.dat >/dev/null 2>&1
+	python3 /usr/local/src/TeX-edit/polyglot/truepolyglot pdfzip --pdffile main.pdf --zipfile main.zip $FILENAME >/dev/null 2>&1
+	rm main.zip main.tex main.aux main.log figurenames.dat main.pdf >/dev/null 2>&1
+	exit
+        ;;
+    esac
+done
+
+if [[ -z "$FILENAME" ]]; then
+	FILENAME="$1"
+	if [[ -z "$FILENAME" ]]; then 
+		echo "No filename entered."
+		exit 0
+	fi
+	if test -a $FILENAME; then 
+		echo "filename"  $FILENAME "already exists. Are you sure you want to overwrite it?" 
+		prompt_confirm "Overwrite File?" || exit 0
+	fi
+	if test -a main.zip; then 
+		echo "The file main.zip already exists. If you continue you will overwrite it." 
+		prompt_confirm "Overwrite File?" || exit 0
+	fi
+fi
+
+if ! test -a main.tex; then 
+	echo "Error: The file main.tex is required to be in the working directoy." 
+	exit
+fi
+if ! test -a main.pdf; then 
+	echo "Error: The file main.pdf is required to be in the working directoy." 
+	exit
+fi
+if ! test -a main.aux; then 
+	echo "Warning: The file main.aux is recommended to be in the working directoy." 
+fi
+if ! test -a main.log; then 
+	echo "Warning: The file main.log is recommended to be in the working directoy." 
+fi
+if ! test -a figurenames.dat; then 
+	echo "Warning: The file figurenames.dat is recommended to be in the working directoy." 
+fi
+
+zip -j main.zip main.tex main.aux main.log figurenames.dat
+
+python3 /usr/local/src/TeX-edit/polyglot/truepolyglot pdfzip --pdffile main.pdf --zipfile main.zip $FILENAME
+
+rm main.zip main.tex main.aux main.log figurenames.dat main.pdf

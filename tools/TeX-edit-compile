@@ -1,0 +1,18 @@
+#!/bin/bash
+if ! test -a $1; then 
+	echo "Incorrect filename:"  $1 "does not exists." 
+	exit
+fi
+if test -d /tmp/TeX-edit; then 
+	echo "Using /tmp/TeX-edit."
+else 
+	mkdir /tmp/TeX-edit
+fi
+unzip -o $1 -d /tmp/TeX-edit/
+cp $1 /tmp/TeX-edit/main.pdf
+pdflatex --shell-escape -output-directory=/tmp/TeX-edit/ /tmp/TeX-edit/main.tex
+zip -j /tmp/TeX-edit/main.zip /tmp/TeX-edit/main.tex /tmp/TeX-edit/main.aux /tmp/TeX-edit/main.log /tmp/TeX-edit/figurenames.dat
+python3 /usr/local/src/TeX-edit/polyglot/truepolyglot pdfzip --pdffile /tmp/TeX-edit/main.pdf --zipfile /tmp/TeX-edit/main.zip $1
+rm /tmp/TeX-edit/main.pdf /tmp/TeX-edit/main.zip
+rm /tmp/TeX-edit/main.log /tmp/TeX-edit/main.aux /tmp/TeX-edit/main.tex /tmp/TeX-edit/figurenames.dat
+exit

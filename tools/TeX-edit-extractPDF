@@ -1,0 +1,18 @@
+#!/bin/bash
+if ! test -a $1; then 
+	echo "Incorrect filename:"  $1 "does not exists." 
+	exit
+fi
+if test -d /tmp/TeX-edit; then 
+	echo "Using /tmp/TeX-edit."
+else 
+	mkdir /tmp/TeX-edit
+fi
+unzip -o $1 -d /tmp/TeX-edit/
+pdflatex --shell-escape -output-directory=/tmp/TeX-edit/ /tmp/TeX-edit/main.tex
+extension="${1##*.}"
+filename="${1%.*}"
+cp /tmp/TeX-edit/main.pdf "$filename(PDF-only).$extension"
+rm /tmp/TeX-edit/main.log /tmp/TeX-edit/main.aux /tmp/TeX-edit/main.tex /tmp/TeX-edit/figurenames.dat
+rm /tmp/TeX-edit/main.pdf
+exit
