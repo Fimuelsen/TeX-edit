@@ -79,12 +79,11 @@ sudo bash setup.sh
 ```
 
 ### Dependencies
-truepolyglot (version 1.6.2)
-pdflatex (pdfTeX 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) kpathsea version 6.3.1)
-zip (version 3.0)
-python3 (version 3.8.5)
-xsel (version 1.2.0 by Conrad Parker)
-touch
+- pdflatex (pdfTeX 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) kpathsea version 6.3.1)
+- zip 
+- python3 (version 3.8.5)
+- xsel (version 1.2.0 by Conrad Parker)
+- touch
 
 ## License
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
