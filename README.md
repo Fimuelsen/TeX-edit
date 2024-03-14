@@ -22,35 +22,35 @@ TeX-edit-make filename.pdf
 ```
 
 ### Commands
-Ctrl-S = Save & Compile
-Ctrl-Q = Quit
-Ctrl-P = Force Quit
-Ctrl-R = Move cursor to left
-Ctrl-H = Delete the highlighted text or if none is highlighted deletes the previous character 
-Ctrl-O = Open PDF file with default (PDF) viewer 
-Ctrl-K = Create new SVG file and open it in Inkscape.
+- Ctrl-S = Save & Compile
+- Ctrl-Q = Quit
+- Ctrl-P = Force Quit
+- Ctrl-R = Move cursor to left
+- Ctrl-H = Delete the highlighted text or if none is highlighted deletes the previous character 
+- Ctrl-O = Open PDF file with default (PDF) viewer 
+- Ctrl-K = Create new SVG file and open it in Inkscape.
 
-Ctrl-C = Copy highlighted test to clipboard
-Ctrl-V = Paste text from clipboard
-Ctrl-X = Cut highlighted test to clipboard
-Shift-Rightarrow = Highlight text one character to the right
-Shift-Leftarrow = Highlight text one character to the left
-Shift-Uparrow = Highlight text until the character above the current one
-Shift-Downarrow = Highlight text until the character below the current one
-Ctrl-Shift-Rightarrow = Highlight text until next space on right or end of line
-Ctrl-Shift-Leftarrow = Highlight text until next space on left or start of line
+- Ctrl-C = Copy highlighted test to clipboard
+- Ctrl-V = Paste text from clipboard
+- Ctrl-X = Cut highlighted test to clipboard
+- Shift-Rightarrow = Highlight text one character to the right
+- Shift-Leftarrow = Highlight text one character to the left
+- Shift-Uparrow = Highlight text until the character above the current one
+- Shift-Downarrow = Highlight text until the character below the current one
+- Ctrl-Shift-Rightarrow = Highlight text until next space on right or end of line
+- Ctrl-Shift-Leftarrow = Highlight text until next space on left or start of line
 
-Ctrl-Rightarrow = Move right until next space or end of line
-Ctrl-Leftarrow = Move left until next space or start of line
-Ctrl-Uparrow = Interchange current line with the line above
-Ctrl-Downarrow = Interchange current line with the line below
+- Ctrl-Rightarrow = Move right until next space or end of line
+- Ctrl-Leftarrow = Move left until next space or start of line
+- Ctrl-Uparrow = Interchange current line with the line above
+- Ctrl-Downarrow = Interchange current line with the line below
 
-Page UP = Move cursor 1 page worth of lines up
-Page DOWN = Move cursor 1 page worth of lines down
-HOME = Move to start of line
-END  = Move to end of line
+- Page UP = Move cursor 1 page worth of lines up
+- Page DOWN = Move cursor 1 page worth of lines down
+- HOME = Move to start of line
+- END  = Move to end of line
 
-TAB = Autocomplete if possible, else puts a tab. Note that tabs currently looks indistinguishable from spaces.
+- TAB = Autocomplete if possible, else puts a tab. Per default a TAB takes up 1 whitespace.
 
 ## Features
 TeX-edit comes with autocomplete and syntax highlighting to speed up your typesetting and 
@@ -78,7 +78,13 @@ Run setup.sh to compile the source code and setup the necessary system files.
 sudo bash setup.sh
 ```
 
-### Dependencies
+### Make Dependencies 
+In order to compile you'll need 'Xlib.h' which can be installed with 
+``` 
+sudo apt install libx11-dev
+```
+
+### Runtime Dependencies
 - pdflatex (pdfTeX 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) kpathsea version 6.3.1)
 - zip 
 - python3 (version 3.8.5)
