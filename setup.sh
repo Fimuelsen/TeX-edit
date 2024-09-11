@@ -1,4 +1,24 @@
 #!/bin/bash
+if command -v make >/dev/null 2>&1 ; then
+    echo "make found"
+else
+    echo "make not found. It can be installed with: \n sudo apt install make"
+    exit
+fi
+if command -v gcc >/dev/null 2>&1 ; then
+    echo "gcc found"
+    exit
+else
+    echo "gcc not found. It can be installed with: \n sudo apt install make"
+    exit
+fi
+if command -v g++ >/dev/null 2>&1 ; then
+    echo "g++ found"
+else
+    echo "g++ not found. It can be installed with: \n sudo apt install make"
+    exit
+fi
+
 make
 cp TeX-edit /usr/local/bin/
 chmod a+x /usr/local/bin/TeX-edit
