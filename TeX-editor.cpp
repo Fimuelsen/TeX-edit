@@ -1744,7 +1744,70 @@ void editorMoveCursor(int key) {
   }
 }
 
-void editorProcessKeypress(int c) {
+void editorProcessKeypress(int c) { 
+  editorSetStatusMessage("%d char", c);
+  switch (c) {
+    case -123:
+      editorInsertChar('{');      
+      editorInsertChar(92);
+      editorInsertChar('A');      
+      editorInsertChar('A');      
+      editorInsertChar('}');      
+      detectSnippet(&E.row[E.cy]);
+      spellCheck();
+      clearHighlight();
+      break;
+    case -122:
+      editorInsertChar('{');      
+      editorInsertChar(92);
+      editorInsertChar('A');      
+      editorInsertChar('E');      
+      editorInsertChar('}');      
+      detectSnippet(&E.row[E.cy]);
+      spellCheck();
+      clearHighlight();
+      break;
+    case -104:
+      editorInsertChar('{');      
+      editorInsertChar(92);
+      editorInsertChar('O');
+      editorInsertChar('}');      
+      detectSnippet(&E.row[E.cy]);
+      spellCheck();
+      clearHighlight();
+      break;
+    case -91:
+      editorInsertChar('{');      
+      editorInsertChar(92);
+      editorInsertChar('a');      
+      editorInsertChar('a');      
+      editorInsertChar('}');      
+      detectSnippet(&E.row[E.cy]);
+      spellCheck();
+      clearHighlight();
+      break;
+    case -90:
+      editorInsertChar('{');      
+      editorInsertChar(92);
+      editorInsertChar('a');      
+      editorInsertChar('e');      
+      editorInsertChar('}');      
+      detectSnippet(&E.row[E.cy]);
+      spellCheck();
+      clearHighlight();
+      break;
+    case -72:
+      editorInsertChar('{');      
+      editorInsertChar(92);
+      editorInsertChar('o');      
+      editorInsertChar('}');      
+      detectSnippet(&E.row[E.cy]);
+      spellCheck();
+      clearHighlight();
+      break;
+    default:
+      break;
+  }
   if (c < 0) {
     return;
   }
